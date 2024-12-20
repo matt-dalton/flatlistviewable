@@ -15,6 +15,7 @@ import {
   Text,
   useColorScheme,
   View,
+  FlatList
 } from 'react-native';
 
 import {
@@ -68,30 +69,30 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+       return (
+        <FlatList
+            data={Array.from({ length: 20 })}
+            renderItem={({ index }) => (
+                <View style={{height: index === 1 ? 250 : 150,padding: 20}}>
+                    <Text>{index}</Text>
+                </View>
+            )}
+            getItemLayout={(data, index) => {
+                if (index === 0) {
+                    return { length: 150, offset: 200, index }
+                }
+                if (index === 1) {
+                    return { length: 250, offset: 150 + 200, index }
+                }
+                return { length: 150, offset: 150 * (index - 2) + 200 + 150 + 200, index }
+            }}
+            ListHeaderComponent={<View style={{height: 200,width:"100%" }} />}
+            viewabilityConfig={viewabilityConfig}
+            onViewableItemsChanged={({ viewableItems }) => {
+                console.log('>>>', viewableItems, viewableItems.length)
+            }}
+        />
+    )
     </SafeAreaView>
   );
 }
